@@ -26,23 +26,20 @@ form.addEventListener('submit', async e => {
 
   try {
     const data = await getImagesByQuery(query);
+    hideLoader(); // ← затримку прибрано
 
-    setTimeout(() => {
-      hideLoader();
+    if (data.hits.length === 0) {
+      iziToast.error({
+        id: 'error',
+        message:
+          'Sorry, there are no images matching your search query. Please try again!',
+        position: 'topRight',
+        transitionIn: 'fadeInDown',
+      });
+      return;
+    }
 
-      if (data.hits.length === 0) {
-        iziToast.error({
-          id: 'error',
-          message:
-            'Sorry, there are no images matching your search query. Please try again!',
-          position: 'topRight',
-          transitionIn: 'fadeInDown',
-        });
-        return;
-      }
-
-      createGallery(data.hits);
-    }, 600);
+    createGallery(data.hits);
   } catch (error) {
     hideLoader();
     iziToast.error({
